@@ -14,10 +14,12 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  */
 public class WindowApiDemo {
     public static void main(String[] args) throws Exception {
+        //
         StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
         env.setParallelism(1);
 
-        SingleOutputStreamOperator<WaterSensor> sensorDS = env.socketTextStream("120.26.10.18", 7777).map(new WaterSensorMapFunction());
+        SingleOutputStreamOperator<WaterSensor> sensorDS = env.socketTextStream("hadoop102", 7777).map(new WaterSensorMapFunction());
 
         KeyedStream<WaterSensor, String> sensorKS = sensorDS.keyBy(sensor -> sensor.getId());
 
@@ -43,6 +45,7 @@ public class WindowApiDemo {
 //                .aggregate()
 //全窗口函数： 数据来了不计算，存起来，窗囗触发的时候，计算并输出结果
 //        sensorKS.process()
+
 
         env.execute();
 
